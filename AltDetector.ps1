@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = "SilentlyContinue"
+$ErrorActionPreference = "SilentlyContinue"
 $UserRN = $env:USERNAME
 clear-host
 Write-Host @"
@@ -19,7 +19,7 @@ if (!(Test-Admin)) {
     Start-Sleep 5
     Exit
 }
-    Start-Sleep -Seconds 2
+    Start-Sleep -Seconds 1
     Write-Host -ForegroundColor Yellow "Starting scan"
 
 
@@ -152,14 +152,6 @@ Add-Content -Path $OutputFile -Value ""
 Add-Content -Path $OutputFile -Value ""
 
 # Minecraft Logs
-$UserRN = $env:USERNAME
-$MinecraftLogsPath = "C:\Users\$UserRN\AppData\Roaming\.minecraft\logs"
-
-function Get-BrazilianDate {
-    return (Get-Date).ToString("dd/MM/yyyy HH:mm")
-}
-
-# Minecraft Logs
 $MinecraftLogsPath = "C:\Users\$UserRN\AppData\Roaming\.minecraft\logs"
 
 function Get-BrazilianDate {
@@ -221,9 +213,6 @@ if ($LogsExists) {
     Add-Content -Path $OutputFile -Value ""
 }
 
-
-
-
 # LUNAR CLIENT
 $LunarClientPath = "C:\Users\$UserRN\.lunarclient"
 $LunarClientLogsPath = "C:\Users\$UserRN\.lunarclient\logs\game"
@@ -274,7 +263,71 @@ if (Test-Path $LunarClientPath) {
     Add-Content -Path $OutputFile -Value ""
 } 
 
+# LUNAR CLIENT2
+$lunar1 = "C:\Users\$UserRN\.lunarclient\offline\multiver\logs"
 
+function Get-BrazilianDate {
+    return (Get-Date).ToString("dd/MM/yyyy HH:mm")
+}
+
+$lunar2 = Test-Path $lunar1
+$lunar3 = if ($lunar2) { (Get-Item $lunar1).LastWriteTime.ToString("dd/MM/yyyy HH:mm") } else { "N/A" }
+
+Add-Content -Path $OutputFile -Value "Offline Lunar: $(if ($lunar2) { 'Existe' } else { 'Não existe' })"
+Add-Content -Path $OutputFile -Value "Data de modificação: $lunar3"
+Add-Content -Path $OutputFile -Value "----------------------------------------------------------"
+Add-Content -Path $OutputFile -Value ""
+
+if ($lunar2) {
+    $lunar4 = @()
+    $lunar5 = Get-ChildItem -Path $lunar1 -Filter *.log.gz
+    
+    foreach ($lunar6 in $lunar5) {
+        $lunar7 = "$env:TEMP\$($lunar6.BaseName).log"
+        try {
+            $lunar8 = [System.IO.Compression.GzipStream]::new([System.IO.File]::OpenRead($lunar6.FullName), [System.IO.Compression.CompressionMode]::Decompress)
+            $lunar9 = [System.IO.StreamReader]::new($lunar8, [System.Text.Encoding]::GetEncoding("ISO-8859-1"))
+            $lunar10 = $lunar9.ReadToEnd() -split "`r`n"
+            $lunar9.Close()
+            $lunar8.Close()
+
+            foreach ($lunar11 in $lunar10) {
+                if ($lunar11 -match "Setting user: ([^\s]+)") {
+                    $lunar12 = $matches[1]
+                    if ($lunar12 -notmatch "^Player\d+$") {
+                        if ($lunar4 -notcontains $lunar12) {
+                            Add-Content -Path $OutputFile -Value "Conta: $lunar12"
+                            $lunar4 += $lunar12
+                        }
+                    }
+                }
+            }
+        } catch {
+            Write-Host "Erro ao processar: $lunar6.FullName" -ForegroundColor Red
+        }
+    }
+    
+    $lunar13 = "$lunar1\latest.log"
+    if (Test-Path $lunar13) {
+        $lunar14 = Get-Content -Path $lunar13
+        foreach ($lunar15 in $lunar14) {
+            if ($lunar15 -match "Setting user: ([^\s]+)") {
+                $lunar16 = $matches[1]
+                if ($lunar16 -notmatch "^Player\d+$") {
+                    if ($lunar4 -notcontains $lunar16) {
+                        Add-Content -Path $OutputFile -Value "Conta: $lunar16"
+                        $lunar4 += $lunar16
+                    }
+                }
+            }
+        }
+    }
+    
+    Add-Content -Path $OutputFile -Value ""
+    Add-Content -Path $OutputFile -Value "----------------------------------------------------------"
+    Add-Content -Path $OutputFile -Value ""
+    Add-Content -Path $OutputFile -Value ""
+}
 
 # BADLION
 $BadlionClientPath = "C:\Users\$UserRN\AppData\Roaming\.minecraft\logs\blclient"
