@@ -25,10 +25,9 @@ Detections:
 
 
 
-# Cabeçalho do arquivo de saída
 HEADER = """\
 Alt Detector | By Smooth
-Github.com/smoothzada/alt-detector
+github.com/Smoothzada/Minecraft-Alt-Detector
 =================================================
 """
 
@@ -92,9 +91,6 @@ def _scan_lines(lines: "list[str]", pattern: re.Pattern, exclude: "re.Pattern | 
                 nicks.add(nick)
     return nicks
 
-
-# Formatação de seções
-
 def format_simple_section(title: str, nicks: "set[str]") -> str:
     lines = [f"\n[{title}]", "Nicks:"]
     if nicks:
@@ -115,7 +111,7 @@ def format_labeled_section(title: str, entries: "list[tuple[str, str]]") -> str:
     return "\n".join(lines)
 
 
-# Fonte 1 — usercache.json
+# usercache.json
 
 def scan_usercache(minecraft_path: Path) -> "set[str] | None":
     cache_file = minecraft_path / "usercache.json"
@@ -136,7 +132,7 @@ def scan_usercache(minecraft_path: Path) -> "set[str] | None":
     return nicks
 
 
-# Fonte 2 — launcher_accounts_microsoft_store.json
+# launcher_accounts_microsoft_store.json
 
 def scan_launcher_accounts(minecraft_path: Path) -> "set[str] | None":
     launcher_file = minecraft_path / "launcher_accounts_microsoft_store.json"
@@ -168,7 +164,7 @@ def _extract_names_recursive(obj) -> "set[str]":
     return found
 
 
-# Fonte 3 — .minecraft/logs/*.gz
+# .minecraft/logs/*.gz
 
 def scan_logs_gz(minecraft_path: Path) -> "set[str] | None":
     logs_dir = minecraft_path / "logs"
@@ -183,7 +179,7 @@ def scan_logs_gz(minecraft_path: Path) -> "set[str] | None":
     return nicks
 
 
-# Fonte 4 — .minecraft/config/ias.json
+# .minecraft/config/ias.json
 
 
 def scan_ias(minecraft_path: Path) -> "list[tuple[str, str]] | None":
@@ -235,7 +231,7 @@ def _find_account_list(obj: dict) -> list:
     return []
 
 
-# Fonte 5 — Lunar Client (game logs)
+# Lunar Client (game logs)
 
 def scan_lunar_game_logs(lunar_path: Path) -> "set[str] | None":
     logs_dir = lunar_path / "logs" / "game"
@@ -250,7 +246,7 @@ def scan_lunar_game_logs(lunar_path: Path) -> "set[str] | None":
     return nicks
 
 
-# Fonte 6 — Lunar Client (launcher log)
+# Lunar Client (launcher log)
 
 def scan_lunar_launcher_log(lunar_path: Path) -> "set[str] | None":
     log_file = lunar_path / "logs" / "launcher" / "main.log"
@@ -289,7 +285,7 @@ def scan_lunar_offline(lunar_path: Path) -> "set[str] | None":
 
     return nicks
 
-# Fonte 8 — Badlion Setting user
+# Badlion Setting user
 
 def scan_badlion_setting_user(minecraft_path: Path) -> "set[str] | None":
     logs_dir = minecraft_path / "logs" / "blclient" / "minecraft"
@@ -306,7 +302,7 @@ def scan_badlion_setting_user(minecraft_path: Path) -> "set[str] | None":
     return nicks
 
 
-# Fonte 9 — Badlion Adding session
+# Badlion Adding session
 
 def scan_badlion_adding_session(minecraft_path: Path) -> "set[str] | None":
     logs_dir = minecraft_path / "logs" / "blclient" / "minecraft"
@@ -323,7 +319,7 @@ def scan_badlion_adding_session(minecraft_path: Path) -> "set[str] | None":
     return nicks
 
 
-# Fonte 10 — TLauncher
+# TLauncher
 
 def scan_tlauncher(appdata_path: Path) -> "set[str] | None":
     logs_dir = appdata_path / ".tlauncher" / "logs" / "tlauncher"
@@ -336,7 +332,7 @@ def scan_tlauncher(appdata_path: Path) -> "set[str] | None":
             nicks.update(_scan_lines(_read_log(log_file), _DISPLAY_NAME_RE))
 
     return nicks
-# Fonte 11 — CubeWhy
+# CubeWhy
 
 def scan_cubewhy(userprofile_path: Path) -> "set[str] | None":
     logs_dir = userprofile_path / ".cubewhy" / "lunarcn" / "game" / "logs"
@@ -363,7 +359,7 @@ def scan_cubewhy(userprofile_path: Path) -> "set[str] | None":
 
     return nicks
 
-# Fonte 12 — Weave Cracked Accounts
+# Weave Cracked Accounts
 
 def scan_weave_cracked(userprofile_path: Path) -> "set[str] | None":
     account_file = userprofile_path / ".weave" / "CrackedAccount" / "account.json"
@@ -383,7 +379,7 @@ def scan_weave_cracked(userprofile_path: Path) -> "set[str] | None":
     return nicks
 
 
-# Fonte 13 — Feather Client
+# Feather Client
 
 def scan_feather(minecraft_path: Path) -> "set[str] | None":
     log_file = minecraft_path / "feather" / "logs" / "latest.log"
@@ -392,7 +388,7 @@ def scan_feather(minecraft_path: Path) -> "set[str] | None":
 
     return _scan_lines(_read_log(log_file), _SETTING_USER_RE)
 
-# Fonte 14 — Celestial Client
+# Celestial Client
 
 def scan_celestial(appdata_path: Path) -> "set[str] | None":
     logs_dir = appdata_path / "celestial" / "game" / "logs"
@@ -408,7 +404,6 @@ def scan_celestial(appdata_path: Path) -> "set[str] | None":
 
     return nicks
 
-# Escrita do arquivo de saída
 
 def write_output(
     simple_sections: "list[tuple[str, set[str] | None]]",
@@ -436,7 +431,6 @@ def write_output(
 
         f.write("\n=================================================\n")
 
-# Entry point principal
 
 def run_scan() -> None:
     minecraft_path   = get_minecraft_path()

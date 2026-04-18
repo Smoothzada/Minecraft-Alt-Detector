@@ -24,7 +24,7 @@ def main():
             
 
         else:
-            print("   [!] Opção inválida. Digite 1 ou 2.")
+            print(f" {Fore.RED}  [!] invalid option, try again.{Style.RESET_ALL}")
 
 
 if __name__ == "__main__":
