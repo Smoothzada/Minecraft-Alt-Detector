@@ -26,13 +26,5 @@ def print_scanning():
         print(f"{Fore.YELLOW}.{Style.RESET_ALL}", end="", flush=True)
     print("\n")
 
-
-def print_done():
-    print(f"\n  {Fore.GREEN}Scan finished! Results in: 'Alt Detector.txt'{Style.RESET_ALL}\n")
-
-
-def print_cancelled():
-    print(f"\n  {Fore.RED}Exiting..{Style.RESET_ALL}\n")
-
 def clear():
     os.system("cls")
