@@ -1,4 +1,5 @@
 from colorama import init, Fore, Style
+import os
 def print_banner():
     print(f"""{Fore.CYAN} 
   █████╗ ██╗  ████████╗    ██████╗ ███████╗████████╗███████╗ ██████╗████████╗ ██████╗ ██████╗ 
@@ -32,3 +33,6 @@ def print_done():
 
 def print_cancelled():
     print(f"\n  {Fore.RED}Exiting..{Style.RESET_ALL}\n")
+
+def clear():
+    os.system("cls")
