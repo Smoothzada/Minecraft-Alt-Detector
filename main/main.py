@@ -15,6 +15,7 @@ def main():
             print_scanning()
             run_scan()
             print(f"\n  {Fore.GREEN}Scan finished! Results in: 'Alt Detector.txt'{Style.RESET_ALL}\n")
+            input("\n  Press Enter to exit...")
             break
 
         elif choice == "2":
