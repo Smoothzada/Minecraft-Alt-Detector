@@ -1,3 +1,5 @@
+.gitattributes
 main/Alt Detector.txt
 main/__pycache__
 main/scanner/__pycache__
+main/AltDetector.spec
