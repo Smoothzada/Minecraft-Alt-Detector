@@ -5,3 +5,4 @@ main/AltDetector.spec
 main/dist
 main/build
 main/WhiteLotus.ico
+*.exe
