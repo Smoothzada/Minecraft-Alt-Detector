@@ -27,14 +27,14 @@ Detections:
 
 HEADER = """\
 Alt Detector | By Smooth
-github.com/Smoothzada/Minecraft-Alt-Detector
+Github.com/Smoothzada/Minecraft-Alt-Detector
 =================================================
 """
 
 OUTPUT_FILE = "Alt Detector.txt"
 
 IAS_TYPE_LABEL = {
-    "ias:offline":   "Pirata",
+    "ias:offline":   "Offline",
     "ias:microsoft": "Original",
 }
 
@@ -61,9 +61,6 @@ def get_userprofile_path() -> "Path | None":
         return None
     path = Path(profile)
     return path if path.is_dir() else None
-
-
-# Helpers de leitura
 
 def _read_gz(path: Path, encoding: str = "utf-8") -> "list[str]":
     try:
