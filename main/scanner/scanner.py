@@ -412,7 +412,7 @@ def write_output(
 
     with output_path.open("w", encoding="utf-8") as f:
         f.write(HEADER)
-        f.write(f"Gerado em: {timestamp}\n")
+        f.write(f"Scan date: {timestamp}\n")
 
         for title, nicks in simple_sections:
             if nicks is None:

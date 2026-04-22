@@ -1,8 +1,8 @@
-main/Alt Detector.txt
+*.txt
+*.exe
 main/__pycache__
 main/scanner/__pycache__
 main/AltDetector.spec
 main/dist
 main/build
 main/WhiteLotus.ico
-*.exe

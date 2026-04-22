@@ -49,4 +49,3 @@ If you want to clone the repository, use the following command:
 # Suggestions and Ideas
 
 If you have any suggestions or ideas for the tool, please use the **Issues** page to let me know.
-
