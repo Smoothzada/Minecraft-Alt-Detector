@@ -10,17 +10,19 @@ Detections:
   1.  usercache.json
   2.  launcher_accounts_microsoft_store.json
   3.  .minecraft/logs/*.gz
-  4.  .minecraft/config/ias.json          (In-Game Account Switcher)
-  5.  .lunarclient/logs/game/*.log        (Lunar Client - game logs)
-  6.  .lunarclient/logs/launcher/main.log (Lunar Client - launcher)
-  7.  .lunarclient/offline/multiver/logs  (Lunar Client - offline)
-  8.  .minecraft/logs/blclient/minecraft  (Badlion - Setting user)
-  9.  .minecraft/logs/blclient/minecraft  (Badlion - Adding session)
-  10. .tlauncher/logs/tlauncher/*.log      (TLauncher)
-  11. .cubewhy/lunarcn/game/logs           (CubeWhy)
-  12. .weave/CrackedAccount/account.json   (Weave Cracked)
-  13. .minecraft/feather/logs/latest.log   (Feather Client)
-  14. %APPDATA%/celestial/game/logs          (Celestial Client)
+  4.  .minecraft/logs/latest.log
+  5.  .minecraft/config/ias.json          (In-Game Account Switcher)
+  6.  .lunarclient/logs/game/*.log        (Lunar Client - game logs)
+  7.  .lunarclient/logs/launcher/main.log (Lunar Client - launcher)
+  8.  .lunarclient/offline/multiver/logs  (Lunar Client - offline)
+  9.  .lunarclient/accounts.json          (Lunar Client - accounts)
+  10. .minecraft/logs/blclient/minecraft  (Badlion - Setting user)
+  11. .minecraft/logs/blclient/minecraft  (Badlion - Adding session)
+  12. .tlauncher/logs/tlauncher/*.log      (TLauncher)
+  13. .cubewhy/lunarcn/game/logs           (CubeWhy)
+  14. .weave/CrackedAccount/account.json   (Weave Cracked)
+  15. .minecraft/feather/logs/latest.log   (Feather Client)
+  16. %APPDATA%/celestial/game/logs        (Celestial Client)
 """
 
 
@@ -176,6 +178,16 @@ def scan_logs_gz(minecraft_path: Path) -> "set[str] | None":
     return nicks
 
 
+# .minecraft/logs/latest.log
+
+def scan_logs_latest(minecraft_path: Path) -> "set[str] | None":
+    log_file = minecraft_path / "logs" / "latest.log"
+    if not log_file.is_file():
+        return None
+
+    return _scan_lines(_read_log(log_file), _SETTING_USER_RE)
+
+
 # .minecraft/config/ias.json
 
 
@@ -281,6 +293,40 @@ def scan_lunar_offline(lunar_path: Path) -> "set[str] | None":
         ))
 
     return nicks
+
+# Lunar Client (accounts.json)
+
+def scan_lunar_accounts(lunar_path: Path) -> "set[str] | None":
+    accounts_file = lunar_path / "accounts.json"
+    if not accounts_file.is_file():
+        return None
+
+    nicks: set[str] = set()
+    try:
+        import json
+        with accounts_file.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        # Estrutura: {"accounts": [{"username": "...", ...}, ...]}
+        account_list = []
+        if isinstance(data, list):
+            account_list = data
+        elif isinstance(data, dict):
+            account_list = data.get("accounts", [])
+
+        for entry in account_list:
+            if not isinstance(entry, dict):
+                continue
+            for field in ("username", "name", "displayName"):
+                name = entry.get(field, "").strip()
+                if name:
+                    nicks.add(name)
+                    break
+    except (Exception):
+        pass
+
+    return nicks
+
 
 # Badlion Setting user
 
@@ -447,6 +493,7 @@ def run_scan() -> None:
             ("usercache.json",                          scan_usercache(minecraft_path)),
             ("launcher_accounts_microsoft_store.json",  scan_launcher_accounts(minecraft_path)),
             ("Minecraft Logs (.gz)",                    scan_logs_gz(minecraft_path)),
+            ("Minecraft Logs (latest.log)",             scan_logs_latest(minecraft_path)),
             ("Badlion Client - Setting user",           scan_badlion_setting_user(minecraft_path)),
             ("Badlion Client - Adding session",         scan_badlion_adding_session(minecraft_path)),
             ("Feather Client",                          scan_feather(minecraft_path)),
@@ -460,6 +507,7 @@ def run_scan() -> None:
             ("Lunar Client - Game Logs",                scan_lunar_game_logs(lunar_path)),
             ("Lunar Client - Launcher",                 scan_lunar_launcher_log(lunar_path)),
             ("Lunar Client - Offline",                  scan_lunar_offline(lunar_path)),
+            ("Lunar Client - Accounts",                 scan_lunar_accounts(lunar_path)),
         ]
 
     if appdata_path:

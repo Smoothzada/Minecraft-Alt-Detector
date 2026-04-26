@@ -112,7 +112,7 @@ def manual_path() -> bool:
         user_input = input("\n> ").strip().strip('"').strip("'")
 
         if user_input.lower() == "f":
-            return True
+            return
 
         folder = Path(user_input)
 
@@ -143,5 +143,4 @@ def manual_path() -> bool:
         _write_manual_output(str(folder), nicks)
 
         print(f"\n  {Fore.GREEN}Scan finished! Results in: '{MANUAL_OUTPUT_FILE}'{Style.RESET_ALL}\n")
-        input("\n  Press Enter to exit...")
-        return False
+        input("\n  Press Enter to return to menu...")
